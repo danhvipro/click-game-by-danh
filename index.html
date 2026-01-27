@@ -5,77 +5,83 @@
     <title>Click Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             text-align: center;
-            margin-top: 100px;
         }
 
-        button {
-            font-size: 20px;
-            padding: 15px 30px;
-            margin: 10px;
+        #gameArea {
+            width: 100%;
+            height: 80vh;
+            position: relative;
+            border: 2px solid #000;
+            margin-top: 10px;
+        }
+
+        #btn {
+            position: absolute;
+            padding: 15px 25px;
+            font-size: 18px;
             cursor: pointer;
-        }
-
-        #clickBtn {
-            display: none;
-        }
-
-        #score, #time {
-            font-size: 24px;
-            margin: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>🎮 CLICK CÀNG NHANH CÀNG TỐT</h1>
+<h1>🎮 CLICK GAME</h1>
 
-    <div id="time">⏱️ Thời gian: 10</div>
-    <div id="score">🎯 Điểm: 0</div>
+<p>Chọn độ khó:</p>
+<button onclick="setMode(1)">Dễ</button>
+<button onclick="setMode(2)">Trung bình</button>
+<button onclick="setMode(3)">Khó</button>
 
-    <button id="startBtn">▶️ Start</button>
-    <br>
-    <button id="clickBtn">🎯 CLICK</button>
+<h2>Điểm: <span id="score">0</span></h2>
 
-    <script>
-        let score = 0;
-        let timeLeft = 10;
-        let timer;
+<div id="gameArea">
+    <button id="btn" onclick="clickBtn()">CLICK</button>
+</div>
 
-        const scoreEl = document.getElementById("score");
-        const timeEl = document.getElementById("time");
-        const startBtn = document.getElementById("startBtn");
-        const clickBtn = document.getElementById("clickBtn");
+<script>
+    let score = 0;
+    let mode = 1;
+    let autoMove = null;
 
-        startBtn.onclick = function () {
-            score = 0;
-            timeLeft = 10;
+    const btn = document.getElementById("btn");
+    const gameArea = document.getElementById("gameArea");
 
-            scoreEl.textContent = "🎯 Điểm: 0";
-            timeEl.textContent = "⏱️ Thời gian: 10";
+    function randomPosition() {
+        const maxX = gameArea.clientWidth - btn.offsetWidth;
+        const maxY = gameArea.clientHeight - btn.offsetHeight;
 
-            startBtn.style.display = "none";
-            clickBtn.style.display = "inline-block";
+        btn.style.left = Math.random() * maxX + "px";
+        btn.style.top = Math.random() * maxY + "px";
+    }
 
-            timer = setInterval(function () {
-                timeLeft--;
-                timeEl.textContent = "⏱️ Thời gian: " + timeLeft;
+    function setMode(m) {
+        mode = m;
+        score = 0;
+        document.getElementById("score").innerText = score;
 
-                if (timeLeft === 0) {
-                    clearInterval(timer);
-                    clickBtn.style.display = "none";
-                    startBtn.style.display = "inline-block";
-                    alert("⏰ Hết giờ! Điểm của bạn: " + score);
-                }
-            }, 1000);
-        };
+        clearInterval(autoMove);
 
-        clickBtn.onclick = function () {
-            score++;
-            scoreEl.textContent = "🎯 Điểm: " + score;
-        };
-    </script>
+        randomPosition();
+
+        if (mode === 3) {
+            autoMove = setInterval(randomPosition, 1000);
+        }
+    }
+
+    function clickBtn() {
+        score++;
+        document.getElementById("score").innerText = score;
+
+        if (mode === 2) {
+            randomPosition();
+        }
+    }
+
+    // vị trí ban đầu
+    randomPosition();
+</script>
 
 </body>
 </html>
