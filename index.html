@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Click Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        button {
+            font-size: 20px;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #clickBtn {
+            display: none;
+        }
+
+        #score, #time {
+            font-size: 24px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎮 CLICK CÀNG NHANH CÀNG TỐT</h1>
+
+    <div id="time">⏱️ Thời gian: 10</div>
+    <div id="score">🎯 Điểm: 0</div>
+
+    <button id="startBtn">▶️ Start</button>
+    <br>
+    <button id="clickBtn">🎯 CLICK</button>
+
+    <script>
+        let score = 0;
+        let timeLeft = 10;
+        let timer;
+
+        const scoreEl = document.getElementById("score");
+        const timeEl = document.getElementById("time");
+        const startBtn = document.getElementById("startBtn");
+        const clickBtn = document.getElementById("clickBtn");
+
+        startBtn.onclick = function () {
+            score = 0;
+            timeLeft = 10;
+
+            scoreEl.textContent = "🎯 Điểm: 0";
+            timeEl.textContent = "⏱️ Thời gian: 10";
+
+            startBtn.style.display = "none";
+            clickBtn.style.display = "inline-block";
+
+            timer = setInterval(function () {
+                timeLeft--;
+                timeEl.textContent = "⏱️ Thời gian: " + timeLeft;
+
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    clickBtn.style.display = "none";
+                    startBtn.style.display = "inline-block";
+                    alert("⏰ Hết giờ! Điểm của bạn: " + score);
+                }
+            }, 1000);
+        };
+
+        clickBtn.onclick = function () {
+            score++;
+            scoreEl.textContent = "🎯 Điểm: " + score;
+        };
+    </script>
+
+</body>
+</html>
