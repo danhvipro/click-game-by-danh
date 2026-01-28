@@ -10,7 +10,7 @@
             text-align: center;
         }
 
-        /* ===== CHỌN ĐỘ KHÓ ===== */
+        /* ===== MENU ===== */
         #menu {
             position: fixed;
             inset: 0;
@@ -30,7 +30,7 @@
             cursor: pointer;
         }
 
-        /* ===== GAME ===== */
+        /* ===== HUD ===== */
         #hud {
             display: flex;
             justify-content: space-around;
@@ -38,6 +38,7 @@
             margin: 10px 0;
         }
 
+        /* ===== GAME ===== */
         #gameArea {
             position: relative;
             height: 80vh;
@@ -52,17 +53,25 @@
             cursor: pointer;
         }
 
+        /* ===== GAME OVER ===== */
         #gameOver {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             color: white;
             display: none;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            font-size: 28px;
+            gap: 20px;
+            font-size: 26px;
             z-index: 20;
+        }
+
+        #gameOver button {
+            font-size: 20px;
+            padding: 12px 30px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -91,6 +100,7 @@
 <div id="gameOver">
     <div>💀 GAME OVER</div>
     <div>Điểm của bạn: <span id="finalScore"></span></div>
+    <button onclick="restartGame()">🔁 Chơi lại</button>
 </div>
 
 <script>
@@ -134,7 +144,6 @@
         timer = setInterval(() => {
             timeLeft--;
             document.getElementById("time").innerText = timeLeft;
-
             if (timeLeft <= 0) endGame();
         }, 1000);
 
@@ -162,8 +171,16 @@
         document.getElementById("finalScore").innerText = score;
         gameOverScreen.style.display = "flex";
     }
+
+    function restartGame() {
+        clearInterval(timer);
+        clearInterval(autoMove);
+        playing = false;
+
+        menu.style.display = "flex";
+        gameOverScreen.style.display = "none";
+    }
 </script>
 
 </body>
 </html>
-
