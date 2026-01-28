@@ -154,14 +154,17 @@
         }
     }
 
-    function clickBtn() {
-        if (!playing) return;
+function clickBtn() {
+    if (!playing) return;
 
-        score++;
-        document.getElementById("score").innerText = score;
+    score++;
+    document.getElementById("score").innerText = score;
 
-        if (mode === 2) randomPosition();
+    if (mode === 2 || mode === 3) {
+        randomPosition();
     }
+}
+}
 
     function endGame() {
         playing = false;
@@ -184,3 +187,4 @@
 
 </body>
 </html>
+
