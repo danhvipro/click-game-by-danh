@@ -5,16 +5,44 @@
     <title>Click Game</title>
     <style>
         body {
-            font-family: Arial;
+            margin: 0;
+            font-family: Arial, sans-serif;
             text-align: center;
         }
 
+        /* ===== CHỌN ĐỘ KHÓ ===== */
+        #menu {
+            position: fixed;
+            inset: 0;
+            background: #111;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        #menu button {
+            font-size: 22px;
+            padding: 15px 40px;
+            cursor: pointer;
+        }
+
+        /* ===== GAME ===== */
+        #hud {
+            display: flex;
+            justify-content: space-around;
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
         #gameArea {
-            width: 100%;
-            height: 80vh;
             position: relative;
+            height: 80vh;
             border: 2px solid #000;
-            margin-top: 10px;
+            overflow: hidden;
         }
 
         #btn {
@@ -23,45 +51,92 @@
             font-size: 18px;
             cursor: pointer;
         }
+
+        #gameOver {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 28px;
+            z-index: 20;
+        }
     </style>
 </head>
 <body>
 
-<h1>🎮 CLICK GAME</h1>
+<!-- MENU -->
+<div id="menu">
+    <h1>🎮 CHỌN ĐỘ KHÓ</h1>
+    <button onclick="startGame(1)">Dễ (15s)</button>
+    <button onclick="startGame(2)">Trung bình (12s)</button>
+    <button onclick="startGame(3)">Khó (10s)</button>
+</div>
 
-<p>Chọn độ khó:</p>
-<button onclick="setMode(1)">Dễ</button>
-<button onclick="setMode(2)">Trung bình</button>
-<button onclick="setMode(3)">Khó</button>
+<!-- HUD -->
+<div id="hud">
+    <div>⏱️ Thời gian: <span id="time">0</span></div>
+    <div>⭐ Điểm: <span id="score">0</span></div>
+</div>
 
-<h2>Điểm: <span id="score">0</span></h2>
-
+<!-- GAME -->
 <div id="gameArea">
     <button id="btn" onclick="clickBtn()">CLICK</button>
 </div>
 
-<script>
-    let score = 0;
-    let mode = 1;
-    let autoMove = null;
+<!-- GAME OVER -->
+<div id="gameOver">
+    <div>💀 GAME OVER</div>
+    <div>Điểm của bạn: <span id="finalScore"></span></div>
+</div>
 
+<script>
     const btn = document.getElementById("btn");
     const gameArea = document.getElementById("gameArea");
+    const menu = document.getElementById("menu");
+    const gameOverScreen = document.getElementById("gameOver");
+
+    let score = 0;
+    let timeLeft = 0;
+    let mode = 1;
+    let timer = null;
+    let autoMove = null;
+    let playing = false;
 
     function randomPosition() {
         const maxX = gameArea.clientWidth - btn.offsetWidth;
         const maxY = gameArea.clientHeight - btn.offsetHeight;
-
         btn.style.left = Math.random() * maxX + "px";
         btn.style.top = Math.random() * maxY + "px";
     }
 
-    function setMode(m) {
-        mode = m;
+    function startGame(selectedMode) {
+        mode = selectedMode;
         score = 0;
-        document.getElementById("score").innerText = score;
+        playing = true;
 
+        if (mode === 1) timeLeft = 15;
+        if (mode === 2) timeLeft = 12;
+        if (mode === 3) timeLeft = 10;
+
+        document.getElementById("score").innerText = score;
+        document.getElementById("time").innerText = timeLeft;
+
+        menu.style.display = "none";
+        gameOverScreen.style.display = "none";
+
+        clearInterval(timer);
         clearInterval(autoMove);
+
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("time").innerText = timeLeft;
+
+            if (timeLeft <= 0) endGame();
+        }, 1000);
 
         randomPosition();
 
@@ -71,17 +146,24 @@
     }
 
     function clickBtn() {
+        if (!playing) return;
+
         score++;
         document.getElementById("score").innerText = score;
 
-        if (mode === 2) {
-            randomPosition();
-        }
+        if (mode === 2) randomPosition();
     }
 
-    // vị trí ban đầu
-    randomPosition();
+    function endGame() {
+        playing = false;
+        clearInterval(timer);
+        clearInterval(autoMove);
+
+        document.getElementById("finalScore").innerText = score;
+        gameOverScreen.style.display = "flex";
+    }
 </script>
 
 </body>
 </html>
+
